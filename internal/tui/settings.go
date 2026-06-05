@@ -62,7 +62,7 @@ func (m *settingScreenModel) View() tea.View {
 		}
 		for j := 0; j < 3; j++ {
 			prefix := "( ) "
-			if (i == 0 && gset.difficulty == j) || (i == 1 && gset.duration == j) || (i == 2 && gset.mode == j) {
+			if (i == 0 && gset.Difficulty == j) || (i == 1 && gset.Duration == j) || (i == 2 && gset.Mode == j) {
 				prefix = "(X) "
 			} else if m.cursor == j && m.list == i {
 				prefix = "(•) "
@@ -91,11 +91,11 @@ func (s *settingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			switch s.list {
 			case 0:
-				gset.difficulty = s.cursor
+				gset.Difficulty = s.cursor
 			case 1:
-				gset.duration = s.cursor
+				gset.Duration = s.cursor
 			case 2:
-				gset.mode = s.cursor
+				gset.Mode = s.cursor
 			}
 		case "down", "j":
 			s.cursor++

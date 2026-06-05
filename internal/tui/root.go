@@ -3,20 +3,15 @@ package tui
 import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss"
+	"kingkongtype/internal/domain"
 )
-
-type Settings struct {
-	difficulty int
-	mode       int
-	duration   int
-}
 
 // msg
 type ChangeScreenMsg struct {
 	NewModel tea.Model
 }
 
-var gset Settings // global settings
+var gset domain.Settings // global settings
 
 type rootScreenModel struct {
 	width  int
@@ -30,10 +25,10 @@ func NewRootScreen() tea.Model {
 	mainMenu := NewMenuScreen()
 	rootModel = mainMenu
 
-	gset = Settings{
-		difficulty: 0,
-		duration:   0,
-		mode:       0,
+	gset = domain.Settings{
+		Difficulty: 0,
+		Duration:   0,
+		Mode:       0,
 	}
 
 	return &rootScreenModel{
@@ -60,7 +55,7 @@ func (m *rootScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m *rootScreenModel) View() tea.View {
 	v := m.model.View()
 	centeredContent := lipgloss.NewStyle().Align(lipgloss.Center).Width(m.width).Height(m.height).Render(v.Content)
-	
+
 	v = tea.NewView(centeredContent)
 	v.AltScreen = true
 	return v
