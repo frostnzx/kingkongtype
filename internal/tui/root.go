@@ -1,0 +1,71 @@
+package tui
+
+import (
+	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/lipgloss"
+)
+
+type Settings struct {
+	difficulty int
+	mode       int
+	duration   int
+}
+
+// msg
+type ChangeScreenMsg struct {
+	NewModel tea.Model
+}
+
+var gset Settings // global settings
+
+type rootScreenModel struct {
+	width  int
+	height int
+	model  tea.Model
+}
+
+func NewRootScreen() tea.Model {
+	var rootModel tea.Model
+
+	mainMenu := NewMenuScreen()
+	rootModel = mainMenu
+
+	gset = Settings{
+		difficulty: 0,
+		duration:   0,
+		mode:       0,
+	}
+
+	return &rootScreenModel{
+		model: rootModel,
+	}
+}
+
+func (m *rootScreenModel) Init() tea.Cmd {
+
+	return m.model.Init()
+}
+func (m *rootScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.width = msg.Width
+		m.height = msg.Height
+	case ChangeScreenMsg:
+		return m.SwitchScreen(msg.NewModel)
+	}
+	var cmd tea.Cmd
+	m.model, cmd = m.model.Update(msg)
+	return m, cmd
+}
+func (m *rootScreenModel) View() tea.View {
+	v := m.model.View()
+	centeredContent := lipgloss.NewStyle().Align(lipgloss.Center).Width(m.width).Height(m.height).Render(v.Content)
+	
+	v = tea.NewView(centeredContent)
+	v.AltScreen = true
+	return v
+}
+func (m *rootScreenModel) SwitchScreen(model tea.Model) (tea.Model, tea.Cmd) {
+	m.model = model
+	return m, m.model.Init()
+}
