@@ -86,7 +86,7 @@ func (s *settingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c":
 			return s, tea.Quit
 		case "esc", "q":
-			menuScreen := NewMenuScreen()
+			menuScreen := NewMenuScreen(1)
 			return s, func() tea.Msg { return ChangeScreenMsg{NewModel: menuScreen} }
 		case "enter":
 			switch s.list {

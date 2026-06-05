@@ -3,7 +3,6 @@ package data
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"kingkongtype/internal/domain"
 	"log"
@@ -16,7 +15,7 @@ type QuoteJson struct {
 	Author string `json:"author"`
 }
 
-func fetchQuote(difficulty string) (*domain.Quote, error) {
+func FetchQuote(difficulty int) (*domain.Quote, error) {
 	url := "https://thequoteshub.com/api/random-quote" // public quote api
 	client := http.Client{
 		Timeout: time.Second * 2,
@@ -45,7 +44,6 @@ func fetchQuote(difficulty string) (*domain.Quote, error) {
 			log.Fatal(jsonErr)
 			return nil, jsonErr
 		}
-		fmt.Println("text :", quote.Text, " author : ", quote.Author)
 		return &domain.Quote{
 			Text:   quote.Text,
 			Author: quote.Author,

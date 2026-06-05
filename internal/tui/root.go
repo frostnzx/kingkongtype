@@ -22,7 +22,7 @@ type rootScreenModel struct {
 func NewRootScreen() tea.Model {
 	var rootModel tea.Model
 
-	mainMenu := NewMenuScreen()
+	mainMenu := NewMenuScreen(0)
 	rootModel = mainMenu
 
 	gset = domain.Settings{

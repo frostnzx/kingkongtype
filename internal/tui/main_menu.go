@@ -39,7 +39,8 @@ func (m *menuScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			switch m.choice {
 			case 0:
-				return nil, nil
+				typingScreen := NewTypingScreen()
+				return m, func() tea.Msg { return ChangeScreenMsg{NewModel: typingScreen} }
 			case 1:
 				settingScreen := NewSettingScreen()
 				return m, func() tea.Msg { return ChangeScreenMsg{NewModel: settingScreen} }
@@ -70,8 +71,8 @@ func (m *menuScreenModel) View() tea.View {
 	return tea.NewView(content)
 }
 
-func NewMenuScreen() tea.Model {
-	return &menuScreenModel{choice: 0}
+func NewMenuScreen(c int) tea.Model {
+	return &menuScreenModel{choice: c}
 }
 
 func title() string {
