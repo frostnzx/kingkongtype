@@ -57,29 +57,43 @@ func (m *typingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *typingScreenModel) View() tea.View {
+	header := lipgloss.NewStyle().
+		Width(m.width).
+		MarginTop(4).
+		Align(lipgloss.Left).
+		Render("ESC to main menu")
 
-	text := "\nESC to main menu\n\n\n\n\n\n"
+	body := ""
 	for i := 0; i < len(m.buffer.Text); i++ {
 		if i >= len(m.buffer.InputText) {
-			text += greyText(string(m.buffer.Text[i]))
+			if i == len(m.buffer.InputText) {
+				body += yellowText("|")
+			}
+			body += greyText(string(m.buffer.Text[i]))
 			continue
 		}
+
 		if m.buffer.CheckPos(i) {
-			text += yellowText(string(m.buffer.Text[i]))
+			body += yellowText(string(m.buffer.Text[i]))
 		} else {
 			for j := i; j < len(m.buffer.InputText); j++ {
-				text += redText(string(m.buffer.InputText[j]))
+				body += redText(string(m.buffer.InputText[j]))
 			}
-			text += yellowText("|")
+			body += yellowText("|")
 			for j := i; j < len(m.buffer.Text); j++ {
-				text += greyText(string(m.buffer.Text[j]))
+				body += greyText(string(m.buffer.Text[j]))
 			}
 			break
 		}
 	}
-	centeredTitle := lipgloss.NewStyle().Align(lipgloss.Center).Width(m.width).Render(text)
-	content := centeredTitle
-	return tea.NewView(content)
+
+	centeredBody := lipgloss.NewStyle().
+		Width(m.width).
+		Align(lipgloss.Center).
+		MarginTop(6).
+		Render(body)
+
+	return tea.NewView(header + "\n" + centeredBody)
 }
 
 func NewTypingScreen() tea.Model {
