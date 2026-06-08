@@ -13,10 +13,10 @@ type settingScreenModel struct {
 	width, height int
 }
 
-var choices = [3][3]string{
+var choices = [][]string{
 	{"Easy", "Medium", "Hard"},
 	{"15s", "30s", "60s"},
-	{"Time", "Word", "Quote"},
+	{"Word", "Quote"},
 }
 
 func NewSettingScreen() tea.Model {
@@ -51,7 +51,7 @@ func (m *settingScreenModel) View() tea.View {
 	s.WriteString(headerStyle.Render(header))
 	s.WriteString("\n\n")
 
-	for i := 0; i < 3; i++ {
+	for i := 0; i < len(choices); i++ {
 		switch i {
 		case 0:
 			s.WriteString("Choose your diffuculty : \n\n")
@@ -60,7 +60,7 @@ func (m *settingScreenModel) View() tea.View {
 		case 2:
 			s.WriteString("Choose your game mode : \n\n")
 		}
-		for j := 0; j < 3; j++ {
+		for j := 0; j < len(choices[i]); j++ {
 			prefix := "( ) "
 			if (i == 0 && gset.Difficulty == j) || (i == 1 && gset.Duration == j) || (i == 2 && gset.Mode == j) {
 				prefix = "(X) "
@@ -103,7 +103,7 @@ func (s *settingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				s.cursor = 0
 				s.list++
 			}
-			if s.list >= 3 {
+			if s.list >= len(choices) {
 				s.list = 0
 			}
 		case "up", "k":
@@ -111,7 +111,7 @@ func (s *settingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if s.cursor < 0 {
 				s.list--
 				if s.list < 0 {
-					s.list = 2
+					s.list = len(choices) - 1
 				}
 				s.cursor = len(choices[s.list]) - 1
 			}
