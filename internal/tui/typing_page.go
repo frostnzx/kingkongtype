@@ -63,6 +63,12 @@ func (m *typingScreenModel) View() tea.View {
 		Align(lipgloss.Left).
 		Render("ESC to main menu")
 
+	author := lipgloss.NewStyle().
+		Width(m.width).
+		MarginTop(4).
+		Align(lipgloss.Left).
+		Render("Author : " + m.author)
+
 	body := ""
 	for i := 0; i < len(m.buffer.Text); i++ {
 		if i >= len(m.buffer.InputText) {
@@ -93,7 +99,7 @@ func (m *typingScreenModel) View() tea.View {
 		MarginTop(6).
 		Render(body)
 
-	return tea.NewView(header + "\n" + centeredBody)
+	return tea.NewView(header + "\n" + author + "\n" + centeredBody)
 }
 
 func NewTypingScreen() tea.Model {
