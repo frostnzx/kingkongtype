@@ -16,7 +16,7 @@ type QuoteJson struct {
 }
 
 func FetchQuote(difficulty int) (*domain.Quote, error) {
-	url := "https://thequoteshub.com/api/random-quote" // public quote api
+	url := "https://thequoteshub.com/api/random-quote" // hard coded public quote api
 	client := http.Client{
 		Timeout: time.Second * 2,
 	}
