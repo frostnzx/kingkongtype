@@ -120,6 +120,12 @@ func (m *typingScreenModel) View() tea.View {
 	return tea.NewView(header + "\n" + author + "\n" + centeredBody + "\n" + timeCount)
 }
 
+// if finish test , or out of time
+func loadResultPage() {
+	// menuScreen := NewMenuScreen(0)
+	// return m, func() tea.Msg { return ChangeScreenMsg{NewModel: menuScreen} }
+}
+
 type timerTickMsg struct{}
 
 func tickTimer() tea.Cmd {
