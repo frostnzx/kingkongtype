@@ -1,6 +1,7 @@
 package tui
 
 import (
+	"strconv"
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
@@ -8,10 +9,11 @@ import (
 )
 
 type resultScreenModel struct {
+	WPM int
 }
 
-func NewResultScreen() tea.Model {
-	return &resultScreenModel{}
+func NewResultScreen(wpm int) tea.Model {
+	return &resultScreenModel{WPM: wpm}
 }
 func (s *resultScreenModel) Init() tea.Cmd {
 	return nil
@@ -19,16 +21,14 @@ func (s *resultScreenModel) Init() tea.Cmd {
 func (m *resultScreenModel) View() tea.View {
 	header := `
 	 /$$$$$$$                                /$$   /$$    
-| $$__  $$                              | $$  | $$    
-| $$  \ $$  /$$$$$$   /$$$$$$$ /$$   /$$| $$ /$$$$$$  
-| $$$$$$$/ /$$__  $$ /$$_____/| $$  | $$| $$|_  $$_/  
-| $$__  $$| $$$$$$$$|  $$$$$$ | $$  | $$| $$  | $$    
-| $$  \ $$| $$_____/ \____  $$| $$  | $$| $$  | $$ /$$
-| $$  | $$|  $$$$$$$ /$$$$$$$/|  $$$$$$/| $$  |  $$$$/
-|__/  |__/ \_______/|_______/  \______/ |__/   \___/  
+	| $$__  $$                              | $$  | $$    
+	| $$  \ $$  /$$$$$$   /$$$$$$$ /$$   /$$| $$ /$$$$$$  
+	| $$$$$$$/ /$$__  $$ /$$_____/| $$  | $$| $$|_  $$_/  
+	| $$__  $$| $$$$$$$$|  $$$$$$ | $$  | $$| $$  | $$    
+	| $$  \ $$| $$_____/ \____  $$| $$  | $$| $$  | $$ /$$
+	| $$  | $$|  $$$$$$$ /$$$$$$$/|  $$$$$$/| $$  |  $$$$/
+	|__/  |__/ \_______/|_______/  \______/ |__/   \___/  
                                                       
-                                                      
-
 	`
 	// centeredHeader := lipgloss.NewStyle().Align(lipgloss.Center).Width(m.width).Render(header)
 	s := strings.Builder{}
@@ -40,6 +40,8 @@ func (m *resultScreenModel) View() tea.View {
 
 	s.WriteString("\n\n")
 	s.WriteString(headerStyle.Render(header))
+	s.WriteString("\nwpm :")
+	s.WriteString(strconv.Itoa(m.WPM))
 	s.WriteString("\n\n")
 
 	s.WriteString("\n\n\n\n\nPress q to return to menu.")

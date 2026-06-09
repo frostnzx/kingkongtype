@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"kingkongtype/internal/data"
 	"log"
+	"math"
 	"time"
 
 	"kingkongtype/internal/writer"
@@ -39,6 +40,11 @@ func (m *typingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 	case timerTickMsg:
 		m.timer.Tick()
+		if m.timer.Time >= gset.GetDuration() {
+			wpm := m.calculateResult()
+			resultScreen := NewResultScreen(wpm)
+			return m, func() tea.Msg { return ChangeScreenMsg{NewModel: resultScreen} }
+		}
 		return m, tickTimer()
 	case tea.KeyPressMsg:
 		switch msg.String() {
@@ -61,6 +67,11 @@ func (m *typingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.buffer.InsertNextChar(" ")
 		default:
 			m.buffer.InsertNextChar(msg.String())
+			if m.IsEnded() {
+				wpm := m.calculateResult()
+				resultScreen := NewResultScreen(wpm)
+				return m, func() tea.Msg { return ChangeScreenMsg{NewModel: resultScreen} }
+			}
 		}
 	}
 	return m, nil
@@ -120,12 +131,6 @@ func (m *typingScreenModel) View() tea.View {
 	return tea.NewView(header + "\n" + author + "\n" + centeredBody + "\n" + timeCount)
 }
 
-// if finish test , or out of time
-func loadResultPage() {
-	// menuScreen := NewMenuScreen(0)
-	// return m, func() tea.Msg { return ChangeScreenMsg{NewModel: menuScreen} }
-}
-
 type timerTickMsg struct{}
 
 func tickTimer() tea.Cmd {
@@ -134,22 +139,24 @@ func tickTimer() tea.Cmd {
 	})
 }
 
-func NewTypingScreen() tea.Model {
-	return &typingScreenModel{}
+func (m *typingScreenModel) calculateResult() int {
+	elapsedTime := max(m.timer.Time, 1)
+	words := float64(len(m.buffer.InputText)) / 5.0
+	minutes := float64(elapsedTime) / 60.0
+	return int(math.Round(words / minutes))
+}
+func (m *typingScreenModel) IsEnded() bool {
+	// case 1 : time is out
+	if m.timer.Time >= gset.GetDuration() {
+		return true
+	}
+	// case 2 : user complete the test
+	if m.buffer.Text == m.buffer.InputText {
+		return true
+	}
+	return false
 }
 
-func redText(s string) string {
-	return lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#FF746C")).
-		Render(s)
-}
-func yellowText(s string) string {
-	return lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#FFD700")).
-		Render(s)
-}
-func greyText(s string) string {
-	return lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#C2BDB9")).
-		Render(s)
+func NewTypingScreen() tea.Model {
+	return &typingScreenModel{}
 }
