@@ -1,16 +1,20 @@
 package tui
 
 import (
+	"fmt"
 	"kingkongtype/internal/data"
 	"log"
+	"time"
+
+	"kingkongtype/internal/writer"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss"
-	"kingkongtype/internal/writer"
 )
 
 type typingScreenModel struct {
-	buffer writer.Buffer
+	buffer *writer.Buffer
+	timer  *writer.Timer
 	author string
 	width  int
 	height int
@@ -23,7 +27,9 @@ func (m *typingScreenModel) Init() tea.Cmd {
 	}
 	m.author = quote.Author
 	m.buffer = writer.NewBuffer(quote.Text)
-	return nil
+	m.timer = writer.NewTimer()
+
+	return tickTimer()
 }
 
 func (m *typingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -31,6 +37,9 @@ func (m *typingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
+	case timerTickMsg:
+		m.timer.Tick()
+		return m, tickTimer()
 	case tea.KeyPressMsg:
 		switch msg.String() {
 		case "ctrl+c":
@@ -61,7 +70,7 @@ func (m *typingScreenModel) View() tea.View {
 		Width(m.width).
 		MarginTop(4).
 		Align(lipgloss.Left).
-		Render("ESC to main menu")
+		Render("----------------\nESC to main menu\n----------------")
 
 	author := lipgloss.NewStyle().
 		Width(m.width).
@@ -96,10 +105,26 @@ func (m *typingScreenModel) View() tea.View {
 	centeredBody := lipgloss.NewStyle().
 		Width(m.width).
 		Align(lipgloss.Center).
+		MarginLeft(5).
+		MarginRight(5).
 		MarginTop(6).
 		Render(body)
 
-	return tea.NewView(header + "\n" + author + "\n" + centeredBody)
+	timeCount := lipgloss.NewStyle().
+		Width(m.width).
+		MarginTop(6).
+		Align(lipgloss.Right).
+		Render(fmt.Sprintf("Time : %d", m.timer.Time))
+
+	return tea.NewView(header + "\n" + author + "\n" + centeredBody + "\n" + timeCount)
+}
+
+type timerTickMsg struct{}
+
+func tickTimer() tea.Cmd {
+	return tea.Tick(time.Second, func(time.Time) tea.Msg {
+		return timerTickMsg{}
+	})
 }
 
 func NewTypingScreen() tea.Model {

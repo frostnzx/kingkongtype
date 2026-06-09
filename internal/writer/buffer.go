@@ -6,8 +6,8 @@ type Buffer struct {
 	Position  int
 }
 
-func NewBuffer(s string) Buffer {
-	return Buffer{Text: s, InputText: "", Position: 0}
+func NewBuffer(s string) *Buffer {
+	return &Buffer{Text: s, InputText: "", Position: 0}
 }
 
 func (b *Buffer) InsertNextChar(c string) {
