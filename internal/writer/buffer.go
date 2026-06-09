@@ -15,6 +15,9 @@ func (b *Buffer) InsertNextChar(c string) {
 	b.Position += 1
 }
 func (b *Buffer) Pop() {
+	if b.Position == 0 {
+		return
+	}
 	b.InputText = b.InputText[:len(b.InputText)-1]
 	b.Position -= 1
 }

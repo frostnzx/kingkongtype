@@ -54,6 +54,7 @@ func (m *typingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			m.author = newQuote.Author
 			m.buffer = writer.NewBuffer(newQuote.Text)
+			m.timer = writer.NewTimer()
 		case "backspace":
 			m.buffer.Pop()
 		case "space":
@@ -114,7 +115,7 @@ func (m *typingScreenModel) View() tea.View {
 		Width(m.width).
 		MarginTop(6).
 		Align(lipgloss.Right).
-		Render(fmt.Sprintf("Time : %d", m.timer.Time))
+		Render(fmt.Sprintf("Time : %d", max(gset.GetDuration()-m.timer.Time, 0)))
 
 	return tea.NewView(header + "\n" + author + "\n" + centeredBody + "\n" + timeCount)
 }

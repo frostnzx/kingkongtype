@@ -10,3 +10,7 @@ type Quote struct {
 	Text   string
 	Author string
 }
+
+func (s Settings) GetDuration() int {
+	return (s.Duration + 1) * 15
+}
