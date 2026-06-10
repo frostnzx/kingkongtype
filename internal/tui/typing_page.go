@@ -22,7 +22,7 @@ type typingScreenModel struct {
 }
 
 func (m *typingScreenModel) Init() tea.Cmd {
-	quote, err := data.FetchQuote(gset.Difficulty)
+	quote, err := data.FetchPrompt(gset)
 	if err != nil {
 		log.Fatal("Error: Can't fetch quote")
 	}
@@ -54,7 +54,7 @@ func (m *typingScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			menuScreen := NewMenuScreen(0)
 			return m, func() tea.Msg { return ChangeScreenMsg{NewModel: menuScreen} }
 		case "tab":
-			newQuote, err := data.FetchQuote(gset.Difficulty)
+			newQuote, err := data.FetchPrompt(gset)
 			if err != nil {
 				log.Fatal("Error: Can't fetch quote")
 			}
