@@ -1,7 +1,9 @@
-# KingKongType
+# Kingkong Type
 
 A small terminal typing test built with Go and Bubble Tea.
 Inspired by [MonkeyType](https://monkeytype.com).
+
+<img width="1920" height="1130" alt="kingkongtype" src="https://github.com/user-attachments/assets/4ea6c981-a986-4cda-bce6-a5936e61d5b5" />
 
 ## Run
 
@@ -18,4 +20,4 @@ go run ./cmd
 - `tab` to load a new quote while typing
 - `q` or `ctrl+c` to quit
 
-Settings include difficulty, duration, and mode. Some parts are still early.
+Settings include difficulty, duration, and mode.
